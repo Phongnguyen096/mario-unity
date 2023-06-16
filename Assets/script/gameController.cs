@@ -2,17 +2,32 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class gameController : MonoBehaviour
+public class GameController : PNGMonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    private static GameController instance;
+    public static GameController Instance { get => instance; }
+
+    [SerializeField] protected Camera mainCamera;
+    public Camera MainCamera { get => mainCamera; }
+
+    protected override void Awake()
     {
-        
+        base.Awake();
+        if (GameController.instance != null) Debug.LogError("Only one  GameCtrl allow to awake");
+        GameController.instance = this;
     }
 
-    // Update is called once per frame
-    void Update()
+    protected override void LoadComponents()
     {
-        
+        base.LoadComponents();
+        this.LoadMainCamera();
+    }
+
+    protected virtual void LoadMainCamera()
+    {
+        if (this.mainCamera != null) return;
+        this.mainCamera = GameController.FindAnyObjectByType<Camera>();
+        Debug.Log(transform.name + " :Load MainCamera", gameObject);
+
     }
 }
